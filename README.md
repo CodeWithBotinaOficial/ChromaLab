@@ -92,6 +92,9 @@ ChromaLab can be easily deployed to various hosting platforms.
 Connect your repository to Vercel, and it will automatically detect and deploy the project. Vercel provides a seamless deployment experience for React applications.
 
 ### GitHub Pages
+
+ChromaLab can be deployed to GitHub Pages, making it accessible online. Once deployed, your application will be available at `https://<your-username>.github.io/ChromaLab/` (replace `<your-username>` with your GitHub username).
+
 For deploying to GitHub Pages, follow these steps:
 1.  **Update `vite.config.ts`**: Ensure your `vite.config.ts` includes the `base` path for GitHub Pages:
     ```typescript
