@@ -8,6 +8,8 @@ import type { TextOverlay } from '../types/text'
 import type { Sticker } from '../types/sticker'
 import type { DrawingStroke } from '../types/drawing'
 import type { Template } from '../types/template'
+import Konva from 'konva'
+import React from 'react'
 
 export interface EditorStore {
   // Image state
@@ -30,6 +32,8 @@ export interface EditorStore {
   addTextOverlay: (textOverlay: TextOverlay) => void
   updateTextOverlay: (id: string, updates: Partial<TextOverlay>) => void
   removeTextOverlay: (id: string) => void
+  selectedTextId: string | null
+  setSelectedTextId: (id: string | null) => void
 
   // Stickers
   stickers: Sticker[]
@@ -47,6 +51,10 @@ export interface EditorStore {
   activeTemplate: Template | null;
   applyTemplate: (template: Template) => void;
   updateTemplateText: (templateId: string, placeholderId: string, newText: string) => void;
+
+  // Drawing mode
+  isDrawing: boolean;
+  toggleDrawing: () => void;
 
   // Crop state
   isCropping: boolean;
@@ -68,11 +76,18 @@ export interface EditorStore {
   };
   updateAdjustment: (key: string, value: number) => void;
   replaceState: (newState: Partial<EditorStore>) => void;
+
+  // Konva Stage Ref
+  stageRef: React.RefObject<Konva.Stage> | null;
+  setStageRef: (ref: React.RefObject<Konva.Stage>) => void;
+
+  // Export
+  exportImage: (mimeType: 'image/png' | 'image/jpeg', quality?: number) => void;
 }
 
 const historyManager = new HistoryManager();
 
-export const useEditorStore = create<EditorStore>((set) => ({
+export const useEditorStore = create<EditorStore>((set, get) => ({
   // Image state
   currentImage: null,
   setCurrentImage: (image: ImageState) => set({ currentImage: image }),
@@ -109,6 +124,8 @@ export const useEditorStore = create<EditorStore>((set) => ({
     set((state) => ({
       textOverlays: state.textOverlays.filter((overlay) => overlay.id !== id),
     })),
+  selectedTextId: null,
+  setSelectedTextId: (id: string | null) => set({ selectedTextId: id }),
 
   // Stickers
   stickers: [],
@@ -176,6 +193,10 @@ export const useEditorStore = create<EditorStore>((set) => ({
       };
     }),
 
+  // Drawing mode
+  isDrawing: false,
+  toggleDrawing: () => set((state) => ({ isDrawing: !state.isDrawing })),
+
   // Crop state
   isCropping: false,
   setIsCropping: (cropping: boolean) => set({ isCropping: cropping }),
@@ -202,4 +223,29 @@ export const useEditorStore = create<EditorStore>((set) => ({
       },
     })),
   replaceState: (newState: Partial<EditorStore>) => set((_state: EditorStore) => ({ ..._state, ...newState })),
+
+  // Konva Stage Ref
+  stageRef: null,
+  setStageRef: (ref: React.RefObject<Konva.Stage>) => set({ stageRef: ref }),
+
+  // Export
+  exportImage: (mimeType: 'image/png' | 'image/jpeg', quality?: number) => {
+    const stage = get().stageRef?.current;
+    if (!stage) {
+      console.error("Konva Stage reference is not available for export.");
+      return;
+    }
+    const dataURL = stage.toDataURL({
+      mimeType,
+      quality,
+      pixelRatio: 2, // Export at a higher resolution for better quality
+    });
+
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = `chromalab_image.${mimeType.split('/')[1]}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  },
 }));

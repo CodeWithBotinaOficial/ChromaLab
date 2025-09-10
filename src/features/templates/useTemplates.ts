@@ -71,10 +71,8 @@ const predefinedTemplates: Template[] = [
 ];
 
 export const useTemplates = () => {
-  const { activeTemplate, executeCommand } = useEditorStore((state) => ({
-    activeTemplate: state.activeTemplate,
-    executeCommand: state.executeCommand,
-  }));
+  const activeTemplate = useEditorStore((state) => state.activeTemplate);
+  const executeCommand = useEditorStore((state) => state.executeCommand);
 
   const applyTemplate = (template: Template) => {
     executeCommand(new ApplyTemplateCommand(template));

@@ -6,10 +6,8 @@ import { RemoveTextCommand } from './commands/RemoveTextCommand';
 import { v4 as uuidv4 } from 'uuid';
 
 export const useTextOverlay = () => {
-  const { textOverlays, executeCommand } = useEditorStore((state) => ({
-    textOverlays: state.textOverlays,
-    executeCommand: state.executeCommand,
-  }));
+  const textOverlays = useEditorStore((state) => state.textOverlays);
+  const executeCommand = useEditorStore((state) => state.executeCommand);
 
   const addText = (initialText: Partial<TextOverlay>) => {
     const newText: TextOverlay = {

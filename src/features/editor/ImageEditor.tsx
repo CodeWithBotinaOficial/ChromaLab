@@ -22,6 +22,9 @@ export const ImageEditor = () => {
   const textOverlays = useEditorStore((state) => state.textOverlays);
   const stickers = useEditorStore((state) => state.stickers);
 
+  const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
+  const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
+
   // Refs for stable values that shouldn't trigger re-renders
   const imageRef = useRef<Konva.Image>(null)
   const stageRef = useRef<Konva.Stage>(null!) // non-null assertion since we know Stage will be available when CropTool mounts
@@ -89,6 +92,15 @@ export const ImageEditor = () => {
     })
   }, [activeFilter, adjustments, dimensions.width, isLoaded])
 
+  const handleStageClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    // deselect text and stickers on click on empty area
+    const clickedOnEmpty = e.target === e.target.getStage();
+    if (clickedOnEmpty) {
+      setSelectedTextId(null);
+      setSelectedStickerId(null);
+    }
+  };
+
   if (!currentImage) {
     return (
       <div className="flex items-center justify-center h-full bg-background-primary text-gray-light">
@@ -96,6 +108,8 @@ export const ImageEditor = () => {
       </div>
     )
   }
+
+  
 
   if (!isLoaded || dimensions.width === 0) {
     return (
@@ -107,7 +121,7 @@ export const ImageEditor = () => {
 
   return (
     <div className="flex-1 flex items-center justify-center bg-background-primary relative">
-      <Stage ref={stageRef} width={dimensions.width} height={dimensions.height}>
+      <Stage ref={stageRef} width={dimensions.width} height={dimensions.height} onClick={handleStageClick} onTap={handleStageClick}>
         <Layer>
           <Image
             ref={imageRef}
@@ -134,13 +148,35 @@ export const ImageEditor = () => {
           )}
         </Layer>
         <DrawingCanvas />
+        <Layer>
+          {textOverlays.map((textOverlay: TextOverlay) => (
+            <EditableText
+              key={textOverlay.id}
+              textOverlay={textOverlay}
+              isSelected={textOverlay.id === selectedTextId}
+              onSelect={() => {
+                setSelectedTextId(textOverlay.id);
+                setSelectedStickerId(null); // Deselect sticker if text is selected
+              }}
+              onDeselect={() => setSelectedTextId(null)}
+            />
+          ))}
+        </Layer>
+        <Layer>
+          {stickers.map((sticker: Sticker) => (
+            <DraggableSticker
+              key={sticker.id}
+              sticker={sticker}
+              isSelected={sticker.id === selectedStickerId}
+              onSelect={() => {
+                setSelectedStickerId(sticker.id);
+                setSelectedTextId(null); // Deselect text if sticker is selected
+              }}
+              onDeselect={() => setSelectedStickerId(null)}
+            />
+          ))}
+        </Layer>
       </Stage>
-      {textOverlays.map((textOverlay: TextOverlay) => (
-        <EditableText key={textOverlay.id} textOverlay={textOverlay} />
-      ))}
-      {stickers.map((sticker: Sticker) => (
-        <DraggableSticker key={sticker.id} sticker={sticker} />
-      ))}
     </div>
   )
 }

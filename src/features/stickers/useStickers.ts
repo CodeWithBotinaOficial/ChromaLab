@@ -6,10 +6,8 @@ import { RemoveStickerCommand } from './commands/RemoveStickerCommand';
 import { v4 as uuidv4 } from 'uuid';
 
 export const useStickers = () => {
-  const { stickers, executeCommand } = useEditorStore((state) => ({
-    stickers: state.stickers,
-    executeCommand: state.executeCommand,
-  }));
+  const stickers = useEditorStore((state) => state.stickers);
+  const executeCommand = useEditorStore((state) => state.executeCommand);
 
   const addSticker = (src: string, initialProps?: Partial<Sticker>) => {
     const newSticker: Sticker = {

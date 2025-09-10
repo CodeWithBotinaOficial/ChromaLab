@@ -7,11 +7,15 @@ import 'react-resizable/css/styles.css'; // Import react-resizable styles
 
 interface DraggableStickerProps {
   sticker: Sticker;
+  isSelected: boolean;
+  onSelect: () => void;
+  onDeselect: () => void;
 }
 
-export const DraggableSticker: React.FC<DraggableStickerProps> = ({ sticker }) => {
+export const DraggableSticker: React.FC<DraggableStickerProps> = ({ sticker, isSelected, onSelect, onDeselect }) => {
   const { updateSticker, removeSticker } = useStickers();
   const stickerRef = useRef<HTMLImageElement>(null);
+  const draggableRef = useRef<HTMLDivElement>(null); // New ref for Draggable's DOM node
   const [rotation, setRotation] = useState(sticker.rotation);
 
   useEffect(() => {
@@ -68,33 +72,37 @@ export const DraggableSticker: React.FC<DraggableStickerProps> = ({ sticker }) =
       position={{ x: sticker.x, y: sticker.y }}
       onStop={handleDrag}
       handle=".handle"
+      nodeRef={draggableRef} // Pass the ref to Draggable
     >
-      <ResizableBox
-        width={sticker.width}
-        height={sticker.height}
-        onResizeStop={handleResize}
-        minConstraints={[20, 20]}
-        maxConstraints={[300, 300]}
-        className="relative border border-dashed border-green-500"
-        style={{
-          transform: `rotate(${rotation}deg)`,
-          position: 'absolute',
-        }}
-      >
-        <img
-          ref={stickerRef}
-          src={sticker.src}
-          alt="sticker"
-          className="handle w-full h-full object-contain cursor-move"
-          onKeyDown={handleKeyDown}
-          tabIndex={0} // Make img focusable for key events
-        />
-        <div
-          className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full cursor-grab"
-          onMouseDown={handleRotateStart}
-          title="Rotate"
-        ></div>
-      </ResizableBox>
+      <div ref={draggableRef} onClick={onSelect}> {/* Assign the ref to a div that wraps ResizableBox */}
+        <ResizableBox
+          width={sticker.width}
+          height={sticker.height}
+          onResizeStop={handleResize}
+          minConstraints={[20, 20]}
+          maxConstraints={[300, 300]}
+          className={`relative border ${isSelected ? 'border-blue-500' : 'border-dashed border-transparent'}`}
+          style={{
+            transform: `rotate(${rotation}deg)`,
+            position: 'absolute',
+          }}
+        >
+          <img
+            ref={stickerRef}
+            src={sticker.src}
+            alt="sticker"
+            className="handle w-full h-full object-contain cursor-move"
+            onKeyDown={handleKeyDown}
+            onBlur={onDeselect} // Call onDeselect when img loses focus
+            tabIndex={0} // Make img focusable for key events
+          />
+          <div
+            className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full cursor-grab"
+            onMouseDown={handleRotateStart}
+            title="Rotate"
+          ></div>
+        </ResizableBox>
+      </div>
     </Draggable>
   );
 };

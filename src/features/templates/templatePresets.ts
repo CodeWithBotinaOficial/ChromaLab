@@ -1,0 +1,67 @@
+
+import type { Template } from '../../shared/types/template';
+
+export const templatePresets: Template[] = [
+  {
+    id: 'drake',
+    name: 'Drake Hotline Bling',
+    previewImage: 'https://i.imgflip.com/30b1gx.jpg',
+    textPlaceholders: [
+      {
+        id: 'text1',
+        defaultText: 'Top text',
+        currentText: '',
+        x: 50,
+        y: 10,
+        width: 400,
+        height: 100,
+        fontSize: 40,
+        fontFamily: 'Impact',
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        fontStyle: 'normal',
+        textDecoration: 'none',
+        rotation: 0,
+      },
+      {
+        id: 'text2',
+        defaultText: 'Bottom text',
+        currentText: '',
+        x: 50,
+        y: 80,
+        width: 400,
+        height: 100,
+        fontSize: 40,
+        fontFamily: 'Impact',
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        fontStyle: 'normal',
+        textDecoration: 'none',
+        rotation: 0,
+      },
+    ],
+  },
+  {
+    id: 'disaster-girl',
+    name: 'Disaster Girl',
+    previewImage: 'https://i.imgflip.com/23ls.jpg',
+    textPlaceholders: [
+      {
+        id: 'text1',
+        defaultText: 'Text',
+        currentText: '',
+        x: 10,
+        y: 80,
+        width: 480,
+        height: 100,
+        fontSize: 40,
+        fontFamily: 'Impact',
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        fontStyle: 'normal',
+        textDecoration: 'none',
+        rotation: 0,
+      },
+    ],
+  },
+];

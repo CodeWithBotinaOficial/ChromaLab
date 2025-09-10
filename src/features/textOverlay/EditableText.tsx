@@ -7,13 +7,17 @@ import 'react-resizable/css/styles.css'; // Import react-resizable styles
 
 interface EditableTextProps {
   textOverlay: TextOverlay;
+  isSelected: boolean;
+  onSelect: () => void;
+  onDeselect: () => void;
 }
 
-export const EditableText: React.FC<EditableTextProps> = ({ textOverlay }) => {
+export const EditableText: React.FC<EditableTextProps> = ({ textOverlay, isSelected, onSelect, onDeselect }) => {
   const { updateText, removeText } = useTextOverlay();
   const [isEditing, setIsEditing] = useState(false);
   const [currentText, setCurrentText] = useState(textOverlay.text);
   const textRef = useRef<HTMLDivElement>(null);
+  const draggableRef = useRef<HTMLDivElement>(null); // New ref for Draggable's DOM node
   const [rotation, setRotation] = useState(textOverlay.rotation);
 
   useEffect(() => {
@@ -29,6 +33,7 @@ export const EditableText: React.FC<EditableTextProps> = ({ textOverlay }) => {
     if (currentText !== textOverlay.text) {
       updateText(textOverlay.id, { text: currentText });
     }
+    onDeselect(); // Call onDeselect when editing finishes
   };
 
   const handleDrag = (_e: any, ui: any) => {
@@ -81,69 +86,73 @@ export const EditableText: React.FC<EditableTextProps> = ({ textOverlay }) => {
       position={{ x: textOverlay.x, y: textOverlay.y }}
       onStop={handleDrag}
       handle=".handle"
+      nodeRef={draggableRef} // Pass the ref to Draggable
     >
-      <ResizableBox
-        width={textOverlay.width}
-        height={textOverlay.height}
-        onResizeStop={handleResize}
-        minConstraints={[50, 20]}
-        maxConstraints={[500, 200]}
-        className="relative border border-dashed border-blue-500"
-        style={{
-          transform: `rotate(${rotation}deg)`,
-          position: 'absolute',
-        }}
-      >
-        <div
-          ref={textRef}
-          className="handle w-full h-full flex items-center justify-center cursor-move"
-          onDoubleClick={handleDoubleClick}
-          onKeyDown={handleKeyDown}
-          tabIndex={0} // Make div focusable for key events
+      <div ref={draggableRef} onClick={onSelect}> {/* Assign the ref to a div that wraps ResizableBox */}
+        <ResizableBox
+          width={textOverlay.width}
+          height={textOverlay.height}
+          onResizeStop={handleResize}
+          minConstraints={[50, 20]}
+          maxConstraints={[500, 200]}
+          className={`relative border ${isSelected ? 'border-blue-500' : 'border-dashed border-transparent'}`}
           style={{
-            fontFamily: textOverlay.fontFamily,
-            fontSize: `${textOverlay.fontSize}px`,
-            color: textOverlay.color,
-            fontWeight: textOverlay.fontWeight,
-            fontStyle: textOverlay.fontStyle,
-            textDecoration: textOverlay.textDecoration,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            userSelect: 'none',
+            transform: `rotate(${rotation}deg)`,
+            position: 'absolute',
           }}
         >
-          {isEditing ? (
-            <textarea
-              value={currentText}
-              onChange={(e) => setCurrentText(e.target.value)}
-              onBlur={handleBlur}
-              autoFocus
-              style={{
-                width: '100%',
-                height: '100%',
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                resize: 'none',
-                textAlign: 'center',
-                fontFamily: textOverlay.fontFamily,
-                fontSize: `${textOverlay.fontSize}px`,
-                color: textOverlay.color,
-                fontWeight: textOverlay.fontWeight,
-                fontStyle: textOverlay.fontStyle,
-                textDecoration: textOverlay.textDecoration,
-              }}
-            />
-          ) : (
-            currentText
-          )}
-        </div>
-        <div
-          className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full cursor-grab"
-          onMouseDown={handleRotateStart}
-          title="Rotate"
-        ></div>
-      </ResizableBox>
+          <div
+            ref={textRef}
+            className="handle w-full h-full flex items-center justify-center cursor-move"
+            onDoubleClick={handleDoubleClick}
+            onKeyDown={handleKeyDown}
+            tabIndex={0} // Make div focusable for key events
+            style={{
+              fontFamily: textOverlay.fontFamily,
+              fontSize: `${textOverlay.fontSize}px`,
+              color: textOverlay.color,
+              fontWeight: textOverlay.fontWeight,
+              fontStyle: textOverlay.fontStyle,
+              textDecoration: textOverlay.textDecoration,
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              userSelect: 'none',
+            }}
+          >
+            {isEditing ? (
+              <textarea
+                value={currentText}
+                onChange={(e) => setCurrentText(e.target.value)}
+                onBlur={handleBlur}
+                autoFocus
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  resize: 'none',
+                  textAlign: 'center',
+                  fontFamily: textOverlay.fontFamily,
+                  fontSize: `${textOverlay.fontSize}px`,
+                  color: textOverlay.color,
+                  fontWeight: textOverlay.fontWeight,
+                  fontStyle: textOverlay.fontStyle,
+                  textDecoration: textOverlay.textDecoration,
+                }}
+              />
+            ) : (
+              currentText
+            )}
+          </div>
+          <div
+            className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full cursor-grab"
+            onMouseDown={handleRotateStart}
+            title="Rotate"
+          ></div>
+        </ResizableBox>
+      </div>
     </Draggable>
   );
 };
+
