@@ -11,6 +11,7 @@ import { DraggableSticker } from '../stickers/DraggableSticker'
 import { DrawingCanvas } from '../drawing/DrawingCanvas'
 import type { TextOverlay } from '../../shared/types/text'
 import type { Sticker } from '../../shared/types/sticker'
+import { Html } from 'react-konva-utils';
 
 export const ImageEditor = () => {
   const currentImage = useEditorStore((state) => state.currentImage);
@@ -150,30 +151,32 @@ export const ImageEditor = () => {
         <DrawingCanvas />
         <Layer>
           {textOverlays.map((textOverlay: TextOverlay) => (
-            <EditableText
-              key={textOverlay.id}
-              textOverlay={textOverlay}
-              isSelected={textOverlay.id === selectedTextId}
-              onSelect={() => {
-                setSelectedTextId(textOverlay.id);
-                setSelectedStickerId(null); // Deselect sticker if text is selected
-              }}
-              onDeselect={() => setSelectedTextId(null)}
-            />
+            <Html key={textOverlay.id}>
+              <EditableText
+                textOverlay={textOverlay}
+                isSelected={textOverlay.id === selectedTextId}
+                onSelect={() => {
+                  setSelectedTextId(textOverlay.id);
+                  setSelectedStickerId(null); // Deselect sticker if text is selected
+                }}
+                onDeselect={() => setSelectedTextId(null)}
+              />
+            </Html>
           ))}
         </Layer>
         <Layer>
           {stickers.map((sticker: Sticker) => (
-            <DraggableSticker
-              key={sticker.id}
-              sticker={sticker}
-              isSelected={sticker.id === selectedStickerId}
-              onSelect={() => {
-                setSelectedStickerId(sticker.id);
-                setSelectedTextId(null); // Deselect text if sticker is selected
-              }}
-              onDeselect={() => setSelectedStickerId(null)}
-            />
+            <Html key={sticker.id}>
+              <DraggableSticker
+                sticker={sticker}
+                isSelected={sticker.id === selectedStickerId}
+                onSelect={() => {
+                  setSelectedStickerId(sticker.id);
+                  setSelectedTextId(null); // Deselect text if sticker is selected
+                }}
+                onDeselect={() => setSelectedStickerId(null)}
+              />
+            </Html>
           ))}
         </Layer>
       </Stage>
