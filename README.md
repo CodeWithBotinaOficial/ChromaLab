@@ -1,81 +1,98 @@
 # ChromaLab
 
-ChromaLab is a modern, professional-grade web-based image editor built with React and TypeScript. It provides a powerful set of tools for image manipulation, filters, and adjustments.
+ChromaLab is a modern, feature-rich image editor built with React + TypeScript. It features professional filters, transformations, text overlays, stickers, drawing, and session persistence. The architecture emphasizes maintainability and scalability, adhering to SOLID principles and utilizing a feature-based structure. Key design patterns like Factory, Strategy, Command, and Adapter are employed to ensure a robust and extensible codebase.
 
 ## Features
 
-- 🎨 Professional Image Filters
-  - Black & White
-  - Sepia
-  - Vintage
-  - Cool
-  - High Contrast
-  - Vivid
-  - Dramatic
+### Core Tools
+- Crop
+- Rotate
+- Transform
+- Filters (grayscale, sepia, vintage, etc.)
+- Adjustments (brightness, contrast, saturation, blur)
 
-- ⚡ Advanced Image Adjustments
-  - Brightness
-  - Contrast
-  - Saturation
-  - Blur
-  - Hue
-  - Noise
-  - Pixelate
-  - White Point
-  - Black Point
-
-- 🛠️ Professional Tools
-  - Undo/Redo History
-  - Drag & Drop Upload
-  - High-Quality Export
-  - Keyboard Shortcuts
+### Advanced Tools
+- Text overlays (fonts, colors, styles)
+- Stickers/Emojis (draggable, resizable)
+- Freehand Drawing (brush, opacity, size)
+- Templates (meme-style)
+- Session persistence via localStorage
+- Export: save the final image with all overlays, stickers, text, and effects applied.
 
 ## Tech Stack
+- React + TypeScript
+- Vite
+- TailwindCSS + shadcn/ui
+- Zustand/Context API for state management
+- Konva.js for canvas layers
 
-- ⚛️ React 19 with TypeScript
-- 🎨 Tailwind CSS for styling
-- 🎯 Konva.js for image manipulation
-- 📦 Zustand for state management
-- 🎪 Radix UI for accessible components
-- ⚡ Vite for blazing fast development
+## Installation & Setup
 
-## Getting Started
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/CodeWithBotinaOficial/ChromaLab.git
+    cd ChromaLab
+    ```
 
-1. Clone the repository:
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3.  Start the development server:
+    ```bash
+    npm run dev
+    ```
+
+## Build
+
 ```bash
-git clone https://github.com/yourusername/chromalab.git
-cd chromalab
+npm run build
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+## Deployment
 
-3. Start the development server:
-```bash
-npm run dev
-```
+### Vercel
+Connect your repository to Vercel, and it will automatically detect and deploy the project.
 
-4. Open [http://localhost:5173](http://localhost:5173) in your browser.
-## Usage
+### GitHub Pages
+1.  Update `vite.config.ts` to include `base: "/ChromaLab/"`:
+    ```typescript
+    import { defineConfig } from 'vite'
+    import react from '@vitejs/plugin-react'
 
-1. Open ChromaLab in your browser
-2. Drag and drop an image or click to upload
-3. Apply filters and adjustments from the sidebar
-4. Use the toolbar for undo/redo and export
-5. Download your edited image
-
-## Keyboard Shortcuts
-
-- `Ctrl + Z`: Undo
-- `Ctrl + Y`: Redo
-- `Ctrl + S`: Export Image
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+    // https://vitejs.dev/config/
+    export default defineConfig({
+      plugins: [react()],
+      base: "/ChromaLab/", // Add this line for GitHub Pages deployment
+    })
+    ```
+2.  Install `gh-pages`:
+    ```bash
+    npm install --save-dev gh-pages
+    ```
+3.  Add a deploy script to your `package.json`:
+    ```json
+    {
+      "name": "chromalab",
+      "version": "0.0.0",
+      "private": true,
+      "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+        "preview": "vite preview",
+        "deploy": "gh-pages -d dist" // Add this line
+      },
+      // ... rest of your package.json
+    }
+    ```
+4.  Run the build and deploy commands:
+    ```bash
+    npm run build
+    npm run deploy
+    ```
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
