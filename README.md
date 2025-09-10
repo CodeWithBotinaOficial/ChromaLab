@@ -52,7 +52,7 @@ Designed for **scalability, maintainability, and performance**, ChromaLab follow
 
 ## 🖼 Demo & Screenshots
 
-[ChromaLab Gif](!src/assets/ChromaLab.gif)
+![ChromaLab Gif](src/assets/ChromaLab.gif)
 
 ---
 
