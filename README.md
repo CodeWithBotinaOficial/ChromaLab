@@ -1,139 +1,173 @@
-# ChromaLab
+# 🎨 ChromaLab
 
 ![ChromaLab Logo](public/chromalab.svg)
 
-ChromaLab is a modern, feature-rich image editor built with React + TypeScript. It empowers users with a comprehensive suite of tools for image manipulation, including professional filters, transformations, text overlays, stickers, drawing, and robust session persistence. Designed with maintainability and scalability in mind, ChromaLab adheres to **SOLID principles** and employs a **feature-based architecture**. Key **design patterns** like Factory, Strategy, Command, and Adapter are utilized to ensure a robust, extensible, and high-performance codebase.
+**ChromaLab** is a next-generation, feature-rich **image editor** built with **React + TypeScript**.
+It combines professional editing tools (crop, rotate, filters, adjustments) with creative freedom (text overlays, stickers, freehand drawing, meme templates).
 
-## Table of Contents
-- [Features](#features)
-  - [Core Tools](#core-tools)
-  - [Advanced Tools](#advanced-tools)
-- [Demo/Screenshots](#demoscreenshots)
-- [Tech Stack](#tech-stack)
-- [Installation & Setup](#installation--setup)
-- [Usage](#usage)
-- [Build](#build)
-- [Deployment](#deployment)
-  - [Vercel](#vercel)
-  - [GitHub Pages](#github-pages)
-- [License](#license)
+Designed for **scalability, maintainability, and performance**, ChromaLab follows **SOLID principles** and leverages well-known **design patterns** (Factory, Strategy, Command, Adapter).
 
-## Features
+---
 
-### Core Tools
-- **Crop**: Precisely trim your images to focus on key areas.
-- **Rotate**: Easily adjust image orientation.
-- **Transform**: Scale and position elements with ease.
-- **Filters**: Apply professional-grade filters like grayscale, sepia, vintage, and more to instantly change the mood of your images.
-- **Adjustments**: Fine-tune image properties such as brightness, contrast, saturation, and blur for perfect visual balance.
+## 📑 Table of Contents
 
-### Advanced Tools
-- **Text Overlays**: Add customizable text with various fonts, colors, and styles to create captions or artistic elements.
-- **Stickers/Emojis**: Enhance your images with a fun collection of draggable and resizable stickers and emojis.
-- **Freehand Drawing**: Unleash your creativity with a freehand drawing tool, offering adjustable brush size and opacity.
-- **Templates**: Quickly create meme-style images or other structured designs using predefined templates.
-- **Session Persistence**: Never lose your work! Your editing session is automatically saved to and loaded from localStorage.
-- **Export**: Save your final masterpiece with all applied overlays, stickers, text, and effects in high quality.
+* [✨ Features](#-features)
 
-## Demo/Screenshots
+  * [Core Tools](#core-tools)
+  * [Advanced Tools](#advanced-tools)
+* [🖼 Demo & Screenshots](#-demo--screenshots)
+* [⚡ Tech Stack](#-tech-stack)
+* [🚀 Installation & Setup](#-installation--setup)
+* [🛠 Usage](#-usage)
+* [📦 Build](#-build)
+* [🌍 Deployment](#-deployment)
 
-*(Add compelling screenshots or a GIF of ChromaLab in action here to showcase its features!)*
+  * [Vercel](#vercel)
+  * [GitHub Pages](#github-pages)
+* [🤝 Contributing](#-contributing)
+* [📜 License](#-license)
 
-## Tech Stack
-- **React + TypeScript**: A powerful combination for building robust and scalable user interfaces.
-- **Vite**: Blazing fast development server and build tool for a smooth developer experience.
-- **TailwindCSS + shadcn/ui**: Utility-first CSS framework and a collection of beautifully designed, accessible UI components.
-- **Zustand/Context API**: Efficient state management for complex application states.
-- **Konva.js**: A 2D canvas library for high-performance image manipulation and interactive layers.
+---
 
-## Installation & Setup
+## ✨ Features
 
-To get ChromaLab up and running on your local machine, follow these simple steps:
+### 🧰 Core Tools
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/CodeWithBotinaOficial/ChromaLab.git
-    cd ChromaLab
-    ```
+* **Crop** → trim precisely, support freeform or aspect ratio.
+* **Rotate** → adjust orientation with ease.
+* **Transform** → scale, flip, and position elements.
+* **Filters** → grayscale, sepia, vintage, and more.
+* **Adjustments** → brightness, contrast, saturation, blur, white/black points.
 
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
+### 🎨 Advanced Tools
 
-3.  **Start the development server**:
-    ```bash
-    npm run dev
-    ```
-    Open your browser and navigate to `http://localhost:5173` to see ChromaLab in action.
+* **Text Overlays** → add customizable text with fonts, colors, and styles.
+* **Stickers/Emojis** → drag, resize, and rotate from a sticker library.
+* **Freehand Drawing** → brush tool with size, color, opacity controls.
+* **Templates** → meme-style or structured layouts.
+* **Session Persistence** → auto-save editing state with localStorage.
+* **Export** → save final image with **all layers applied** (text, stickers, drawings, filters).
 
-## Usage
+---
 
-1.  **Upload an Image**: Drag and drop an image onto the canvas or use the upload button.
-2.  **Edit**: Utilize the sidebar tools for filters, adjustments, text, stickers, and drawing.
-3.  **Undo/Redo**: Use the history panel or keyboard shortcuts (`Ctrl+Z`, `Ctrl+Y`) to manage your changes.
-4.  **Export**: Once satisfied, click the export button to save your edited image.
+## 🖼 Demo & Screenshots
 
-## Build
+📸 *(Coming soon: GIFs and screenshots showcasing filters, text overlays, and export!)*
 
-To create a production-ready build of ChromaLab:
+---
+
+## ⚡ Tech Stack
+
+* **React + TypeScript** → robust and scalable UI.
+* **Vite** → lightning-fast build tool.
+* **TailwindCSS + shadcn/ui** → modern, minimal, accessible UI.
+* **Zustand / Context API** → state management.
+* **Konva.js** → canvas layers for rendering & exporting.
+
+---
+
+## 🚀 Installation & Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/CodeWithBotinaOficial/ChromaLab.git
+   cd ChromaLab
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start development server:
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## 🛠 Usage
+
+1. Upload → drag & drop or click to upload an image.
+2. Edit → use sidebar tools for filters, adjustments, text, stickers, drawing.
+3. Undo/Redo → keyboard shortcuts (`Ctrl+Z`, `Ctrl+Y`) or history panel.
+4. Export → save your masterpiece as PNG/JPEG with all edits applied.
+
+---
+
+## 📦 Build
+
+Generate a production build:
 
 ```bash
 npm run build
 ```
 
-This will compile the application into the `dist` directory.
+Build output goes into the `dist/` folder.
 
-## Deployment
+---
 
-ChromaLab can be easily deployed to various hosting platforms.
+## 🌍 Deployment
 
 ### Vercel
-Connect your repository to Vercel, and it will automatically detect and deploy the project. Vercel provides a seamless deployment experience for React applications.
+
+* Connect your repo → automatic deployment.
+* Perfect for quick, free hosting.
 
 ### GitHub Pages
 
-ChromaLab can be deployed to GitHub Pages, making it accessible online. Once deployed, your application will be available at `https://<your-username>.github.io/ChromaLab/` (replace `<your-username>` with your GitHub username).
+1. Update `vite.config.ts`:
 
-For deploying to GitHub Pages, follow these steps:
-1.  **Update `vite.config.ts`**: Ensure your `vite.config.ts` includes the `base` path for GitHub Pages:
-    ```typescript
-    import { defineConfig } from 'vite'
-    import react from '@vitejs/plugin-react'
+   ```ts
+   export default defineConfig({
+     base: "/ChromaLab/",
+   })
+   ```
+2. Install `gh-pages`:
 
-    // https://vitejs.dev/config/
-    export default defineConfig({
-      plugins: [react()],
-      base: "/ChromaLab/", // Add this line for GitHub Pages deployment
-    })
-    ```
-2.  **Install `gh-pages`**: If you haven't already, install the `gh-pages` package as a development dependency:
-    ```bash
-    npm install --save-dev gh-pages
-    ```
-3.  **Add Deploy Script**: Add a `deploy` script to the `scripts` section of your `package.json`:
-    ```json
-    {
-      "name": "chromalab",
-      "version": "0.0.0",
-      "private": true,
-      "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
-        "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-        "preview": "vite preview",
-        "deploy": "gh-pages -d dist" // Add this line
-      },
-      // ... rest of your package.json
-    }
-    ```
-4.  **Build and Deploy**: Run the build command followed by the deploy command:
-    ```bash
-    npm run build
-    npm run deploy
-    ```
-    Your application will be deployed to `https://<your-username>.github.io/ChromaLab/`.
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+3. Add script in `package.json`:
 
-## License
+   ```json
+   "scripts": {
+     "deploy": "gh-pages -d dist"
+   }
+   ```
+4. Build & deploy:
 
-This project is licensed under the MIT License.
+   ```bash
+   npm run build
+   npm run deploy
+   ```
+
+Your app will be live at:
+`https://<your-username>.github.io/ChromaLab/`
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! 🎉
+
+* Fork the repo
+* Create a feature branch: `git checkout -b feature/amazing-feature`
+* Commit changes: `git commit -m 'Add amazing feature'`
+* Push branch: `git push origin feature/amazing-feature`
+* Open a Pull Request
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+See the [LICENSE](./LICENSE) file for details.
+
+---
+
