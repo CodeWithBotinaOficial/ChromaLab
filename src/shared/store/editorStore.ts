@@ -80,14 +80,12 @@ export interface EditorStore {
   // Konva Stage Ref
   stageRef: React.RefObject<Konva.Stage> | null;
   setStageRef: (ref: React.RefObject<Konva.Stage>) => void;
-
-  // Export
-  exportImage: (mimeType: 'image/png' | 'image/jpeg', quality?: number) => void;
 }
 
 const historyManager = new HistoryManager();
 
-export const useEditorStore = create<EditorStore>((set, get) => ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useEditorStore = create<EditorStore>((set, _get) => ({
   // Image state
   currentImage: null,
   setCurrentImage: (image: ImageState) => set({ currentImage: image }),
@@ -155,6 +153,7 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   // Templates
   activeTemplate: null,
   applyTemplate: (template: Template) =>
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     set((_state: EditorStore) => ({
       activeTemplate: template,
       // When applying a template, clear existing text overlays and add template placeholders as new text overlays
@@ -216,36 +215,18 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     blackPoint: 0,
   },
   updateAdjustment: (key: string, value: number) =>
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     set((_state: EditorStore) => ({
       adjustments: {
         ..._state.adjustments,
         [key]: value,
       },
     })),
-  replaceState: (newState: Partial<EditorStore>) => set((_state: EditorStore) => ({ ..._state, ...newState })),
+  replaceState: (newState: Partial<EditorStore>) =>
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    set((_state: EditorStore) => ({ ..._state, ...newState })),
 
   // Konva Stage Ref
   stageRef: null,
   setStageRef: (ref: React.RefObject<Konva.Stage>) => set({ stageRef: ref }),
-
-  // Export
-  exportImage: (mimeType: 'image/png' | 'image/jpeg', quality?: number) => {
-    const stage = get().stageRef?.current;
-    if (!stage) {
-      console.error("Konva Stage reference is not available for export.");
-      return;
-    }
-    const dataURL = stage.toDataURL({
-      mimeType,
-      quality,
-      pixelRatio: 2, // Export at a higher resolution for better quality
-    });
-
-    const link = document.createElement('a');
-    link.href = dataURL;
-    link.download = `chromalab_image.${mimeType.split('/')[1]}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  },
 }));

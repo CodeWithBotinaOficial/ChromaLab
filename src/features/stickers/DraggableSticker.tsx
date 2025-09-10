@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import type { Sticker } from '../../shared/types/sticker';
 import { useStickers } from './useStickers';
-import Draggable from 'react-draggable';
+import Draggable, { type DraggableData, type DraggableEvent } from 'react-draggable';
 import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css'; // Import react-resizable styles
 
@@ -22,11 +22,11 @@ export const DraggableSticker: React.FC<DraggableStickerProps> = ({ sticker, isS
     setRotation(sticker.rotation);
   }, [sticker.rotation]);
 
-  const handleDrag = (_e: any, ui: any) => {
+  const handleDrag = (_e: DraggableEvent, ui: DraggableData) => {
     updateSticker(sticker.id, { x: ui.x, y: ui.y });
   };
 
-  const handleResize = (_e: any, { size }: any) => {
+  const handleResize = (_e: React.SyntheticEvent, { size }: { size: { width: number; height: number } }) => {
     updateSticker(sticker.id, { width: size.width, height: size.height });
   };
 

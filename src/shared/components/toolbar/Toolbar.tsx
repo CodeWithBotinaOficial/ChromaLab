@@ -3,27 +3,10 @@ import { useEditorStore } from '../../store/editorStore'
 import { Button } from '../ui/Button'
 import { Tooltip } from '../ui/Tooltip'
 
-export const Toolbar = () => {
+export const Toolbar = ({ onExport }: { onExport: () => void }) => {
   const { undo, redo, currentImage, canUndo, canRedo } = useEditorStore()
   
-  const handleExport = async () => {
-    if (!currentImage) return
-
-    // Get the Konva stage
-    const stage = document.querySelector('canvas') as HTMLCanvasElement
-    if (!stage) return
-
-    // Get the modified image data
-    const modifiedDataUrl = stage.toDataURL(currentImage.type, 1.0) // Maximum quality
-    
-    // Create download link
-    const link = document.createElement('a')
-    link.download = `edited_${currentImage.name}`
-    link.href = modifiedDataUrl
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
+  
   
   return (
     <div className="flex items-center gap-2">
@@ -53,7 +36,7 @@ export const Toolbar = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={handleExport}
+          onClick={onExport}
           disabled={!currentImage}
           leftIcon={<Download className="w-5 h-5" />}
         />

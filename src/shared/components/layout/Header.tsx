@@ -3,10 +3,11 @@ import { Toolbar } from '../toolbar/Toolbar'
 import { Image } from 'lucide-react'
 
 interface HeaderProps {
-  className?: string
+  className?: string;
+  onExport: () => void;
 }
 
-export const Header = ({ className }: HeaderProps) => {
+export const Header = ({ className, onExport }: HeaderProps) => {
   return (
     <header className={cn('flex items-center justify-between p-4 bg-background-secondary border-b border-background-primary', className)}>
       {/* Logo and Title */}
@@ -22,7 +23,7 @@ export const Header = ({ className }: HeaderProps) => {
 
       {/* Actions */}
       <div className="flex items-center space-x-4">
-        <Toolbar />
+        <Toolbar onExport={onExport} />
       </div>
     </header>
   )

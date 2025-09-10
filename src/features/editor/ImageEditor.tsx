@@ -1,5 +1,5 @@
-import { Stage, Layer, Image } from 'react-konva'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { Stage, Layer, Image, Text } from 'react-konva'
+import { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { useEditorStore } from '../../shared/store/editorStore'
 
 import Konva from 'konva'
@@ -13,7 +13,11 @@ import type { TextOverlay } from '../../shared/types/text'
 import type { Sticker } from '../../shared/types/sticker'
 import { Html } from 'react-konva-utils';
 
-export const ImageEditor = () => {
+export interface ImageEditorRef {
+  handleExport: () => void;
+}
+
+export const ImageEditor = forwardRef<ImageEditorRef>((_props, ref) => {
   const currentImage = useEditorStore((state) => state.currentImage);
   const activeFilter = useEditorStore((state) => state.activeFilter);
   const adjustments = useEditorStore((state) => state.adjustments);
@@ -25,6 +29,7 @@ export const ImageEditor = () => {
 
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
+  const [isPreparingForExport, setIsPreparingForExport] = useState(false);
 
   // Refs for stable values that shouldn't trigger re-renders
   const imageRef = useRef<Konva.Image>(null)
@@ -102,6 +107,31 @@ export const ImageEditor = () => {
     }
   };
 
+  const handleExport = useCallback(() => {
+    setIsPreparingForExport(true);
+    setTimeout(() => {
+      if (stageRef.current) {
+        const dataURL = stageRef.current.toDataURL({
+          mimeType: 'image/png',
+          quality: 1,
+          pixelRatio: 2, // Export at a higher resolution for better quality
+        });
+        // Trigger download
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = `chromalab_image.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      setIsPreparingForExport(false);
+    }, 50); // Small delay to allow Konva nodes to render
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    handleExport,
+  }));
+
   if (!currentImage) {
     return (
       <div className="flex items-center justify-center h-full bg-background-primary text-gray-light">
@@ -150,36 +180,73 @@ export const ImageEditor = () => {
         </Layer>
         <DrawingCanvas />
         <Layer>
-          {textOverlays.map((textOverlay: TextOverlay) => (
-            <Html key={textOverlay.id}>
-              <EditableText
-                textOverlay={textOverlay}
-                isSelected={textOverlay.id === selectedTextId}
-                onSelect={() => {
-                  setSelectedTextId(textOverlay.id);
-                  setSelectedStickerId(null); // Deselect sticker if text is selected
-                }}
-                onDeselect={() => setSelectedTextId(null)}
+          {isPreparingForExport ? (
+            textOverlays.map((textOverlay: TextOverlay) => (
+              <Text
+                key={textOverlay.id}
+                x={textOverlay.x}
+                y={textOverlay.y}
+                text={textOverlay.text}
+                fontSize={textOverlay.fontSize}
+                fontFamily={textOverlay.fontFamily}
+                fill={textOverlay.color}
+                rotation={textOverlay.rotation}
+                width={textOverlay.width}
+                height={textOverlay.height}
+                align="center"
+                verticalAlign="middle"
               />
-            </Html>
-          ))}
+            ))
+          ) : (
+            textOverlays.map((textOverlay: TextOverlay) => (
+              <Html key={textOverlay.id}>
+                <EditableText
+                  textOverlay={textOverlay}
+                  isSelected={textOverlay.id === selectedTextId}
+                  onSelect={() => {
+                    setSelectedTextId(textOverlay.id);
+                    setSelectedStickerId(null); // Deselect sticker if text is selected
+                  }}
+                  onDeselect={() => setSelectedTextId(null)}
+                />
+              </Html>
+            ))
+          )}
         </Layer>
         <Layer>
-          {stickers.map((sticker: Sticker) => (
-            <Html key={sticker.id}>
-              <DraggableSticker
-                sticker={sticker}
-                isSelected={sticker.id === selectedStickerId}
-                onSelect={() => {
-                  setSelectedStickerId(sticker.id);
-                  setSelectedTextId(null); // Deselect text if sticker is selected
-                }}
-                onDeselect={() => setSelectedStickerId(null)}
-              />
-            </Html>
-          ))}
+          {isPreparingForExport ? (
+            stickers.map((sticker: Sticker) => {
+              const img = new window.Image();
+              img.src = sticker.src;
+              return (
+                <Image
+                  key={sticker.id}
+                  x={sticker.x}
+                  y={sticker.y}
+                  width={sticker.width}
+                  height={sticker.height}
+                  image={img}
+                  rotation={sticker.rotation}
+                />
+              );
+            })
+          ) : (
+            stickers.map((sticker: Sticker) => (
+              <Html key={sticker.id}>
+                <DraggableSticker
+                  sticker={sticker}
+                  isSelected={sticker.id === selectedStickerId}
+                  onSelect={() => {
+                    setSelectedStickerId(sticker.id);
+                    setSelectedTextId(null); // Deselect text if sticker is selected
+                  }}
+                  onDeselect={() => setSelectedStickerId(null)}
+                />
+              </Html>
+            ))
+          )}
         </Layer>
       </Stage>
     </div>
   )
-}
+});

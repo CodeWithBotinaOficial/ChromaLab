@@ -3,10 +3,7 @@ import { Layer, Line } from 'react-konva';
 import Konva from 'konva';
 import { useDrawing } from './useDrawing';
 
-interface DrawingCanvasProps {
-}
-
-export const DrawingCanvas: React.FC<DrawingCanvasProps> = () => {
+export const DrawingCanvas: React.FC = () => {
   const { drawingStrokes, addStroke, brushColor, brushSize, brushOpacity } = useDrawing();
   const isDrawing = useRef(false);
   const currentLine = useRef<number[]>([]);

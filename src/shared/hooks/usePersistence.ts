@@ -55,5 +55,5 @@ export const usePersistence = () => {
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToPersist));
-  }, [JSON.stringify(stateToPersist)]);
+  }, [stateToPersist]);
 };

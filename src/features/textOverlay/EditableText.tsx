@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import type { TextOverlay } from '../../shared/types/text';
 import { useTextOverlay } from './useTextOverlay';
-import Draggable from 'react-draggable';
+import Draggable, { type DraggableData, type DraggableEvent } from 'react-draggable';
 import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css'; // Import react-resizable styles
 
@@ -36,11 +36,11 @@ export const EditableText: React.FC<EditableTextProps> = ({ textOverlay, isSelec
     onDeselect(); // Call onDeselect when editing finishes
   };
 
-  const handleDrag = (_e: any, ui: any) => {
+  const handleDrag = (_e: DraggableEvent, ui: DraggableData) => {
     updateText(textOverlay.id, { x: ui.x, y: ui.y });
   };
 
-  const handleResize = (_e: any, { size }: any) => {
+  const handleResize = (_e: React.SyntheticEvent, { size }: { size: { width: number; height: number } }) => {
     updateText(textOverlay.id, { width: size.width, height: size.height });
   };
 
@@ -155,4 +155,3 @@ export const EditableText: React.FC<EditableTextProps> = ({ textOverlay, isSelec
     </Draggable>
   );
 };
-
