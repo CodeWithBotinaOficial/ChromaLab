@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { useEditorStore } from '../../shared/store/editorStore'
 import type { ImageState } from '../../shared/types/image'
 import { Upload, X } from 'lucide-react'
+import type { EditorStore } from '../../shared/store/editorStore'
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
@@ -12,7 +13,7 @@ interface UploadError {
 }
 
 export const ImageUpload = () => {
-  const { setCurrentImage } = useEditorStore()
+  const setCurrentImage = useEditorStore((state: EditorStore) => state.setCurrentImage);
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState<UploadError | null>(null)
   const [isLoading, setIsLoading] = useState(false)

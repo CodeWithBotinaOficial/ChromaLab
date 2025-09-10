@@ -2,6 +2,7 @@ import { FiltersPanel } from './filters/FiltersPanel'
 import { AdjustmentsPanel } from './adjustments/AdjustmentsPanel'
 import { TransformPanel } from './transform/TransformPanel'
 import { ToolPanel } from './ui/ToolPanel'
+ 
 
 export const Sidebar = () => {
   return (

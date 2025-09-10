@@ -3,6 +3,7 @@ import { Sidebar } from './shared/components/Sidebar'
 import { Header } from './shared/components/layout/Header'
 import { MainLayout } from './shared/components/layout/MainLayout'
 import { useKeyboardShortcuts } from './shared/hooks/useKeyboardShortcuts'
+ 
 
 export default function App() {
   useKeyboardShortcuts()

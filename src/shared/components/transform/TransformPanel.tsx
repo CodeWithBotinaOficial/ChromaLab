@@ -55,10 +55,10 @@ export const TransformPanel: FC = () => {
             min={-180}
             max={180}
             step={1}
-            value={transform.rotation}
-            defaultValue={0}
-            onChange={handleFreeRotate}
-            onAfterChange={handleFreeRotateEnd}
+            value={[transform.rotation]}
+            defaultValue={[0]}
+            onChange={([value]) => handleFreeRotate(value)}
+            onAfterChange={([value]) => handleFreeRotateEnd(value)}
           />
         </div>
 

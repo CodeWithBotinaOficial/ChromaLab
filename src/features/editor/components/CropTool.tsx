@@ -3,6 +3,7 @@ import { Rect, Transformer } from 'react-konva'
 import type Konva from 'konva'
 import { useEditorStore } from '@/shared/store/editorStore'
 import { CropCommand } from '@/features/transformations/commands/CropCommand'
+import type { EditorStore } from '@/shared/store/editorStore'
 
 interface CropToolProps {
   imageWidth: number
@@ -19,7 +20,9 @@ interface CropBoxState {
 }
 
 export const CropTool: FC<CropToolProps> = ({ imageWidth, imageHeight, onFinishCrop, stageRef }) => {
-  const { executeCommand, currentImage, setCurrentImage } = useEditorStore()
+  const executeCommand = useEditorStore((state: EditorStore) => state.executeCommand);
+  const currentImage = useEditorStore((state: EditorStore) => state.currentImage);
+  const setCurrentImage = useEditorStore((state: EditorStore) => state.setCurrentImage);
   const cropRef = useRef<Konva.Rect>(null)
   const transformerRef = useRef<Konva.Transformer>(null)
   

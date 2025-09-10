@@ -14,32 +14,32 @@ export const AdjustmentsPanel = () => {
           <h4 className="text-sm font-medium text-gray-400">Basic</h4>
           <Slider
             label="Brightness"
-            value={adjustments.brightness}
-            defaultValue={100}
+            value={[adjustments.brightness]}
+            defaultValue={[100]}
             min={0}
             max={200}
             step={1}
-            onChange={(value) => updateAdjustment('brightness', value)}
+            onChange={([value]) => updateAdjustment('brightness', value)}
           />
           
           <Slider
             label="Contrast"
-            value={adjustments.contrast}
-            defaultValue={100}
+            value={[adjustments.contrast]}
+            defaultValue={[100]}
             min={0}
             max={200}
             step={1}
-            onChange={(value) => updateAdjustment('contrast', value)}
+            onChange={([value]) => updateAdjustment('contrast', value)}
           />
           
           <Slider
             label="Saturation"
-            value={adjustments.saturation}
-            defaultValue={100}
+            value={[adjustments.saturation]}
+            defaultValue={[100]}
             min={0}
             max={200}
             step={1}
-            onChange={(value) => updateAdjustment('saturation', value)}
+            onChange={([value]) => updateAdjustment('saturation', value)}
           />
         </div>
 
@@ -48,32 +48,32 @@ export const AdjustmentsPanel = () => {
           <h4 className="text-sm font-medium text-gray-400">Color</h4>
           <Slider
             label="Hue"
-            value={adjustments.hue}
-            defaultValue={0}
+            value={[adjustments.hue]}
+            defaultValue={[0]}
             min={-180}
             max={180}
             step={1}
-            onChange={(value) => updateAdjustment('hue', value)}
+            onChange={([value]) => updateAdjustment('hue', value)}
           />
           
           <Slider
             label="White Point"
-            value={adjustments.whitePoint}
-            defaultValue={100}
+            value={[adjustments.whitePoint]}
+            defaultValue={[100]}
             min={0}
             max={100}
             step={1}
-            onChange={(value) => updateAdjustment('whitePoint', value)}
+            onChange={([value]) => updateAdjustment('whitePoint', value)}
           />
           
           <Slider
             label="Black Point"
-            value={adjustments.blackPoint}
-            defaultValue={0}
+            value={[adjustments.blackPoint]}
+            defaultValue={[0]}
             min={0}
             max={100}
             step={1}
-            onChange={(value) => updateAdjustment('blackPoint', value)}
+            onChange={([value]) => updateAdjustment('blackPoint', value)}
           />
         </div>
 
@@ -82,32 +82,32 @@ export const AdjustmentsPanel = () => {
           <h4 className="text-sm font-medium text-gray-400">Effects</h4>
           <Slider
             label="Blur"
-            value={adjustments.blur}
-            defaultValue={0}
+            value={[adjustments.blur]}
+            defaultValue={[0]}
             min={0}
             max={20}
             step={0.5}
-            onChange={(value) => updateAdjustment('blur', value)}
+            onChange={([value]) => updateAdjustment('blur', value)}
           />
           
           <Slider
             label="Noise"
-            value={adjustments.noise}
-            defaultValue={0}
+            value={[adjustments.noise]}
+            defaultValue={[0]}
             min={0}
             max={100}
             step={1}
-            onChange={(value) => updateAdjustment('noise', value)}
+            onChange={([value]) => updateAdjustment('noise', value)}
           />
           
           <Slider
             label="Pixelate"
-            value={adjustments.pixelate}
-            defaultValue={1}
+            value={[adjustments.pixelate]}
+            defaultValue={[1]}
             min={1}
             max={40}
             step={1}
-            onChange={(value) => updateAdjustment('pixelate', value)}
+            onChange={([value]) => updateAdjustment('pixelate', value)}
           />
         </div>
       </div>

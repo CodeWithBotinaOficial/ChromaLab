@@ -1,20 +1,26 @@
 import { Stage, Layer, Image } from 'react-konva'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useEditorStore } from '../../shared/store/editorStore'
+
 import Konva from 'konva'
 import { applyImageFilters } from '../filters/filterUtils'
 import { ImageUpload } from '../imageUpload/ImageUpload'
 import { CropTool } from './components/CropTool'
+import { EditableText } from '../textOverlay/EditableText'
+import { DraggableSticker } from '../stickers/DraggableSticker'
+import { DrawingCanvas } from '../drawing/DrawingCanvas'
+import type { TextOverlay } from '../../shared/types/text'
+import type { Sticker } from '../../shared/types/sticker'
 
 export const ImageEditor = () => {
-  const { 
-    currentImage, 
-    activeFilter, 
-    adjustments, 
-    isCropping, 
-    setIsCropping, 
-    transform
-  } = useEditorStore()
+  const currentImage = useEditorStore((state) => state.currentImage);
+  const activeFilter = useEditorStore((state) => state.activeFilter);
+  const adjustments = useEditorStore((state) => state.adjustments);
+  const isCropping = useEditorStore((state) => state.isCropping);
+  const setIsCropping = useEditorStore((state) => state.setIsCropping);
+  const transform = useEditorStore((state) => state.transform);
+  const textOverlays = useEditorStore((state) => state.textOverlays);
+  const stickers = useEditorStore((state) => state.stickers);
 
   // Refs for stable values that shouldn't trigger re-renders
   const imageRef = useRef<Konva.Image>(null)
@@ -100,7 +106,7 @@ export const ImageEditor = () => {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center bg-background-primary">
+    <div className="flex-1 flex items-center justify-center bg-background-primary relative">
       <Stage ref={stageRef} width={dimensions.width} height={dimensions.height}>
         <Layer>
           <Image
@@ -127,7 +133,14 @@ export const ImageEditor = () => {
             />
           )}
         </Layer>
+        <DrawingCanvas />
       </Stage>
+      {textOverlays.map((textOverlay: TextOverlay) => (
+        <EditableText key={textOverlay.id} textOverlay={textOverlay} />
+      ))}
+      {stickers.map((sticker: Sticker) => (
+        <DraggableSticker key={sticker.id} sticker={sticker} />
+      ))}
     </div>
   )
 }

@@ -3,13 +3,13 @@ import * as SliderPrimitive from '@radix-ui/react-slider'
 
 interface SliderProps {
   label: string
-  value: number
-  defaultValue: number
+  value: number[]
+  defaultValue: number[]
   min: number
   max: number
   step: number
-  onChange: (value: number) => void
-  onAfterChange?: (value: number) => void // Add this prop
+  onChange: (value: number[]) => void
+  onAfterChange?: (value: number[]) => void // Add this prop
 }
 
 export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
@@ -20,19 +20,19 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           {label}
         </label>
         <span className="text-sm text-gray-400">
-          {value}
+          {value[0]}
         </span>
       </div>
       <SliderPrimitive.Root
         ref={ref}
         className="relative flex w-full touch-none select-none items-center"
-        value={[value]}
-        defaultValue={[defaultValue]}
+        value={value}
+        defaultValue={defaultValue}
         max={max}
         min={min}
         step={step}
-        onValueChange={(values) => onChange(values[0])}
-        onValueCommit={(values) => onAfterChange && onAfterChange(values[0])} // Map to onAfterChange
+        onValueChange={onChange}
+        onValueCommit={onAfterChange} // Map to onAfterChange
         {...props}
       >
         <SliderPrimitive.Track className="relative h-1.5 w-full grow rounded-full bg-background-secondary">
