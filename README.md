@@ -52,7 +52,7 @@ Designed for **scalability, maintainability, and performance**, ChromaLab follow
 
 ## 🖼 Demo & Screenshots
 
-📸 *(Coming soon: GIFs and screenshots showcasing filters, text overlays, and export!)*
+[ChromaLab Gif](!src/assets/ChromaLab.gif)
 
 ---
 
@@ -148,7 +148,7 @@ Build output goes into the `dist/` folder.
    ```
 
 Your app will be live at:
-`https://<your-username>.github.io/ChromaLab/`
+[ChromaLab](https://codewithbotinaoficial.github.io/ChromaLab)
 
 ---
 
