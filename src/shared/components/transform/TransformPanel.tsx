@@ -1,109 +1,78 @@
-import { RotateCw, RotateCcw, FlipHorizontal2, FlipVertical2, Crop } from 'lucide-react'
-import { useCallback, useState } from 'react'
-import { useEditorStore } from '../../store/editorStore'
+import { type FC, useCallback } from 'react'
+import { useEditorStore } from '@/shared/store/editorStore'
+import { ToolPanel } from '@/shared/components/ui/ToolPanel'
+import { Button } from '@/shared/components/ui/Button'
+import { RotateCommand } from '@/features/transformations/commands/RotateCommand'
+import { FlipCommand } from '@/features/transformations/commands/FlipCommand'
+import { FreeRotateCommand } from '@/features/transformations/commands/FreeRotateCommand'
+import { Slider } from '@/shared/components/Slider'
 
-export const TransformPanel = () => {
-  const { pushAction, currentImage, isCropping, setIsCropping } = useEditorStore()
+export const TransformPanel: FC = () => {
+  const { 
+    transform, 
+    updateTransform, 
+    executeCommand, 
+    isCropping, 
+    setIsCropping 
+  } = useEditorStore()
 
-  const handleCropClick = useCallback(() => {
+  const handleRotate = useCallback((direction: 'cw' | 'ccw') => {
+    const rotationChange = direction === 'cw' ? 90 : -90
+    executeCommand(new RotateCommand(transform.rotation, rotationChange, updateTransform))
+  }, [transform.rotation, updateTransform, executeCommand])
+
+  const handleFreeRotate = useCallback((value: number) => {
+    // For free rotation, we don't want to push a command on every slider change
+    // Instead, we update the transform directly, and only push a command on mouse up
+    // For now, let's just update the transform directly
+    updateTransform({ rotation: value })
+  }, [updateTransform])
+
+  const handleFreeRotateEnd = useCallback((value: number) => {
+    // When the user finishes dragging the slider, execute the command
+    executeCommand(new FreeRotateCommand(transform.rotation, value, updateTransform))
+  }, [transform.rotation, updateTransform, executeCommand])
+
+  const handleFlip = useCallback((direction: 'horizontal' | 'vertical') => {
+    executeCommand(new FlipCommand(transform.scaleX, transform.scaleY, direction, updateTransform))
+  }, [transform.scaleX, transform.scaleY, updateTransform, executeCommand])
+
+  const handleToggleCrop = useCallback(() => {
     setIsCropping(!isCropping)
   }, [isCropping, setIsCropping])
 
-  const [isTransforming, setIsTransforming] = useState(false)
-
-  const handleRotate = useCallback((direction: 'cw' | 'ccw') => {
-    if (!currentImage || isTransforming) return
-
-    setIsTransforming(true)
-    requestAnimationFrame(() => {
-      pushAction({
-        type: 'TRANSFORM_ROTATE',
-        payload: { type: 'TRANSFORM_ROTATE', direction },
-        timestamp: Date.now(),
-        previousState: { ...currentImage }
-      })
-      // Add a small delay to prevent rapid clicking
-      setTimeout(() => setIsTransforming(false), 150)
-    })
-  }, [currentImage, isTransforming, pushAction])
-
-  const handleFlip = useCallback((direction: 'horizontal' | 'vertical') => {
-    if (!currentImage || isTransforming) return
-
-    setIsTransforming(true)
-    requestAnimationFrame(() => {
-      pushAction({
-        type: 'TRANSFORM_FLIP',
-        payload: { type: 'TRANSFORM_FLIP', direction },
-        timestamp: Date.now(),
-        previousState: { ...currentImage }
-      })
-      // Add a small delay to prevent rapid clicking
-      setTimeout(() => setIsTransforming(false), 150)
-    })
-  }, [currentImage, isTransforming, pushAction])
-
   return (
-    <div className="space-y-6 p-4">
-      <h3 className="text-lg font-semibold text-gray-light">Transform</h3>
-      
-      <div className="space-y-4">
-        {/* Basic Transform Controls */}
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            className="flex items-center justify-center p-3 rounded-md bg-background-secondary text-gray-light hover:bg-accent-blue/20 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => handleRotate('ccw')}
-            title="Rotate Counter-Clockwise"
-            disabled={isTransforming || !currentImage}
-          >
-            <RotateCcw className={`w-5 h-5 ${isTransforming ? 'animate-spin' : ''}`} />
-          </button>
-          
-          <button
-            className="flex items-center justify-center p-3 rounded-md bg-background-secondary text-gray-light hover:bg-accent-blue/20 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => handleRotate('cw')}
-            title="Rotate Clockwise"
-            disabled={isTransforming || !currentImage}
-          >
-            <RotateCw className={`w-5 h-5 ${isTransforming ? 'animate-spin' : ''}`} />
-          </button>
-          
-          <button
-            className="flex items-center justify-center p-3 rounded-md bg-background-secondary text-gray-light hover:bg-accent-blue/20 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => handleFlip('horizontal')}
-            title="Flip Horizontal"
-            disabled={isTransforming || !currentImage}
-          >
-            <FlipHorizontal2 className={`w-5 h-5 ${isTransforming ? 'animate-pulse' : ''}`} />
-          </button>
-          
-          <button
-            className="flex items-center justify-center p-3 rounded-md bg-background-secondary text-gray-light hover:bg-accent-blue/20 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => handleFlip('vertical')}
-            title="Flip Vertical"
-            disabled={isTransforming || !currentImage}
-          >
-            <FlipVertical2 className={`w-5 h-5 ${isTransforming ? 'animate-pulse' : ''}`} />
-          </button>
+    <ToolPanel title="Transform">
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-around items-center">
+          <Button onClick={() => handleRotate('ccw')}>Rotate Left</Button>
+          <Button onClick={() => handleRotate('cw')}>Rotate Right</Button>
         </div>
 
-        {/* Crop Control */}
-        <button
-          className={`
-            w-full flex items-center justify-center gap-2 p-3 rounded-md
-            transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-            ${isCropping 
-              ? 'bg-accent-blue text-white hover:bg-accent-blue/90' 
-              : 'bg-background-secondary text-gray-light hover:bg-accent-blue/20'
-            }
-          `}
-          onClick={handleCropClick}
-          disabled={!currentImage}
-        >
-          <Crop className="w-5 h-5" />
-          <span>{isCropping ? 'Apply Crop' : 'Crop Image'}</span>
-        </button>
+        <div>
+          <Slider
+            label="Free Rotate"
+            min={-180}
+            max={180}
+            step={1}
+            value={transform.rotation}
+            defaultValue={0}
+            onChange={handleFreeRotate}
+            onAfterChange={handleFreeRotateEnd}
+          />
+        </div>
+
+        <div className="flex justify-around items-center">
+          <Button onClick={() => handleFlip('horizontal')}>Flip Horizontal</Button>
+          <Button onClick={() => handleFlip('vertical')}>Flip Vertical</Button>
+        </div>
+
+        <div className="flex justify-center">
+          <Button onClick={handleToggleCrop}>
+            {isCropping ? 'Cancel Crop' : 'Crop Image'}
+          </Button>
+        </div>
       </div>
-    </div>
+    </ToolPanel>
   )
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback, type FC } from 'react'
 import { Rect, Transformer } from 'react-konva'
 import type Konva from 'konva'
 import { useEditorStore } from '@/shared/store/editorStore'
+import { CropCommand } from '@/features/transformations/commands/CropCommand'
 
 interface CropToolProps {
   imageWidth: number
@@ -17,17 +18,8 @@ interface CropBoxState {
   height: number
 }
 
-interface CropOperation {
-  x: number
-  y: number
-  width: number
-  height: number
-  scaleX: number
-  scaleY: number
-}
-
 export const CropTool: FC<CropToolProps> = ({ imageWidth, imageHeight, onFinishCrop, stageRef }) => {
-  const { pushAction, currentImage } = useEditorStore()
+  const { executeCommand, currentImage, setCurrentImage } = useEditorStore()
   const cropRef = useRef<Konva.Rect>(null)
   const transformerRef = useRef<Konva.Transformer>(null)
   
@@ -115,7 +107,7 @@ export const CropTool: FC<CropToolProps> = ({ imageWidth, imageHeight, onFinishC
   const performCrop = useCallback(() => {
     if (!cropRef.current || !stageRef.current || !currentImage) return
 
-    const stage = stageRef.current
+    const scale = imageWidth / currentImage.width
 
     // Create a new canvas to perform the crop
     const canvas = document.createElement('canvas')
@@ -123,8 +115,10 @@ export const CropTool: FC<CropToolProps> = ({ imageWidth, imageHeight, onFinishC
     if (!ctx) return
 
     // Set up the canvas with the cropped dimensions
-    canvas.width = cropBox.width
-    canvas.height = cropBox.height
+    const finalWidth = Math.round(cropBox.width / scale)
+    const finalHeight = Math.round(cropBox.height / scale)
+    canvas.width = finalWidth
+    canvas.height = finalHeight
 
     // Create a temporary image
     const img = new Image()
@@ -132,47 +126,37 @@ export const CropTool: FC<CropToolProps> = ({ imageWidth, imageHeight, onFinishC
 
     img.onload = () => {
       // Draw the cropped portion
-      // Log values for debugging
-      console.log('CropBox:', cropBox)
-      console.log('Stage Scale X:', stage.scaleX())
-      console.log('Stage Scale Y:', stage.scaleY())
-
-      // Draw the cropped portion
       ctx.drawImage(
         img,
-        cropBox.x, // sx (source x) - REMOVED DIVISION BY STAGE SCALE
-        cropBox.y, // sy (source y) - REMOVED DIVISION BY STAGE SCALE
-        cropBox.width, // sWidth (source width) - REMOVED DIVISION BY STAGE SCALE
-        cropBox.height, // sHeight (source height) - REMOVED DIVISION BY STAGE SCALE
+        cropBox.x / scale, // sx (source x)
+        cropBox.y / scale, // sy (source y)
+        finalWidth, // sWidth (source width)
+        finalHeight, // sHeight (source height)
         0, // dx (destination x)
         0, // dy (destination y)
-        cropBox.width, // dWidth (destination width)
-        cropBox.height // dHeight (destination height)
+        finalWidth, // dWidth (destination width)
+        finalHeight // dHeight (destination height)
       )
 
       // Get the cropped image data
       const croppedDataUrl = canvas.toDataURL(currentImage.type, 1.0)
 
-      // Push the crop action
-      pushAction({
-        type: 'TRANSFORM_CROP',
-        payload: {
-          type: 'TRANSFORM_CROP',
-          x: cropBox.x,
-          y: cropBox.y,
-          width: cropBox.width,
-          height: cropBox.height,
-          dataUrl: croppedDataUrl
-        },
-        timestamp: Date.now(),
-        previousState: currentImage
-      })
+      // Create the new image state
+      const newImageState = {
+        ...currentImage,
+        width: finalWidth,
+        height: finalHeight,
+        dataUrl: croppedDataUrl
+      }
+
+      // Execute the crop command
+      executeCommand(new CropCommand(currentImage, newImageState, setCurrentImage))
 
       // Clean up
       canvas.remove()
       onFinishCrop()
     }
-  }, [currentImage, onFinishCrop, pushAction, stageRef, cropBox])
+  }, [currentImage, onFinishCrop, executeCommand, setCurrentImage, stageRef, cropBox, imageWidth])
 
   // Listen for external crop trigger
   useEffect(() => {

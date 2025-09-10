@@ -13,16 +13,13 @@ export const ImageEditor = () => {
     adjustments, 
     isCropping, 
     setIsCropping, 
-    transform, 
-    updateTransform,
-    history,
-    currentIndex
+    transform
   } = useEditorStore()
 
   // Refs for stable values that shouldn't trigger re-renders
   const imageRef = useRef<Konva.Image>(null)
   const stageRef = useRef<Konva.Stage>(null!) // non-null assertion since we know Stage will be available when CropTool mounts
-  const imageInstanceRef = useRef<HTMLImageElement | null>(null)
+  const [imageElement, setImageElement] = useState<HTMLImageElement | undefined>(undefined)
 
   // State for UI updates only
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
@@ -33,11 +30,8 @@ export const ImageEditor = () => {
     setIsLoaded(false)
     
     const img = new window.Image()
-    imageInstanceRef.current = img
     
     img.onload = () => {
-      if (imageInstanceRef.current !== img) return // Prevent stale callbacks
-      
       const maxWidth = window.innerWidth * 0.8
       const maxHeight = window.innerHeight * 0.8
       const scale = Math.min(
@@ -51,6 +45,7 @@ export const ImageEditor = () => {
       }
       
       setDimensions(newDimensions)
+      setImageElement(img)
       setIsLoaded(true)
     }
 
@@ -67,58 +62,11 @@ export const ImageEditor = () => {
     setupImage(currentImage.dataUrl)
 
     return () => {
-      imageInstanceRef.current = null
+      // No cleanup needed for imageElement state
     }
   }, [currentImage, setupImage])
 
-  // Handle transform updates from actions
-  useEffect(() => {
-    if (!history[currentIndex]) return
-
-    const action = history[currentIndex]
-    if (!('type' in action)) return
-
-    // Use useCallback to memoize handlers
-    const handleRotate = (direction: 'cw' | 'ccw') => {
-      requestAnimationFrame(() => {
-        const rotationChange = direction === 'cw' ? 90 : -90
-        // Calculate new rotation outside of setState to prevent loop
-        const newRotation = ((transform.rotation + rotationChange) % 360 + 360) % 360
-        if (newRotation !== transform.rotation) {
-          updateTransform({ rotation: newRotation })
-        }
-      })
-    }
-
-    const handleFlip = (direction: 'horizontal' | 'vertical') => {
-      requestAnimationFrame(() => {
-        if (direction === 'horizontal') {
-          const newScale = transform.scaleX * -1
-          if (newScale !== transform.scaleX) {
-            updateTransform({ scaleX: newScale })
-          }
-        } else {
-          const newScale = transform.scaleY * -1
-          if (newScale !== transform.scaleY) {
-            updateTransform({ scaleY: newScale })
-          }
-        }
-      })
-    }
-
-    switch (action.type) {
-      case 'TRANSFORM_ROTATE': {
-        const { direction } = action.payload as { direction: 'cw' | 'ccw' }
-        handleRotate(direction)
-        break
-      }
-      case 'TRANSFORM_FLIP': {
-        const { direction } = action.payload as { direction: 'horizontal' | 'vertical' }
-        handleFlip(direction)
-        break
-      }
-    }
-  }, [currentIndex, history, transform.rotation, transform.scaleX, transform.scaleY, updateTransform])
+  
 
   // Apply filters when needed
   useEffect(() => {
@@ -157,7 +105,7 @@ export const ImageEditor = () => {
         <Layer>
           <Image
             ref={imageRef}
-            image={imageInstanceRef.current || undefined}
+            image={imageElement}
             width={dimensions.width}
             height={dimensions.height}
             draggable={false}

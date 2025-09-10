@@ -9,10 +9,11 @@ interface SliderProps {
   max: number
   step: number
   onChange: (value: number) => void
+  onAfterChange?: (value: number) => void // Add this prop
 }
 
 export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
-  ({ label, value, defaultValue, min, max, step, onChange, ...props }, ref) => (
+  ({ label, value, defaultValue, min, max, step, onChange, onAfterChange, ...props }, ref) => (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-gray-light">
@@ -31,6 +32,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         min={min}
         step={step}
         onValueChange={(values) => onChange(values[0])}
+        onValueCommit={(values) => onAfterChange && onAfterChange(values[0])} // Map to onAfterChange
         {...props}
       >
         <SliderPrimitive.Track className="relative h-1.5 w-full grow rounded-full bg-background-secondary">

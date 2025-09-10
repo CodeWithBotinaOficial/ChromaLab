@@ -4,7 +4,7 @@ import { Button } from '../ui/Button'
 import { Tooltip } from '../ui/Tooltip'
 
 export const Toolbar = () => {
-  const { undo, redo, currentImage, history, currentIndex } = useEditorStore()
+  const { undo, redo, currentImage, canUndo, canRedo } = useEditorStore()
   
   const handleExport = async () => {
     if (!currentImage) return
@@ -32,7 +32,7 @@ export const Toolbar = () => {
           variant="ghost"
           size="sm"
           onClick={undo}
-          disabled={currentIndex === -1}
+          disabled={!canUndo()}
           leftIcon={<Undo2 className="w-5 h-5" />}
         />
       </Tooltip>
@@ -42,7 +42,7 @@ export const Toolbar = () => {
           variant="ghost"
           size="sm"
           onClick={redo}
-          disabled={currentIndex === history.length - 1}
+          disabled={!canRedo()}
           leftIcon={<Redo2 className="w-5 h-5" />}
         />
       </Tooltip>
